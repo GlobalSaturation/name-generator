@@ -1,6 +1,6 @@
 let names = [
 'Cheesy Feets',
-'Bob McRoss',
+//'Bob McRoss',
 'Chinnigan',
 'Poopskidoo',
 'Snacker',
@@ -22,16 +22,23 @@ let names = [
 'Smackeroo',
 'David',
 'The peepinator',
-'Keanu Oui',
+//'Keanu Oui',
 'Peeperoni',
 'Jeepers Peepers',
-'Beanie Weenie'
+'Beanie Weenie',
+'Uncle Peep',
+//'El Nacho'
+'Charles Fitzgerald',
+'Snooch',
+'Ricardo',
+'Cletus'
 ]
 
 let order = 2;//determine what size chunks we're breaking the words into
 let beginnings = [];
 let endings = [];
 let ngrams = {};
+let maxWords = 2;
 
 function setup() {
 	for (let i = 0; i < names.length; i++) {
@@ -69,11 +76,22 @@ function getRandomArrayElem(array) {
 function markovIt() {
 	let currentGram = getRandomArrayElem(beginnings);
 	let result = currentGram;
+	let numWords = 1;
 
-	for (let i = 0; i < 20; i++) {
+	while (true) {
+		//stop if there's somehow no possibilities
 		let possibilities = ngrams[currentGram];
 		if (!possibilities) {
 			break;
+		}
+
+		//a new 'word' is made when a new space is reached
+		if (result[result.length-1] == ' ') {
+			numWords++;
+			//stop when the max no. of words are exceeded
+			if (numWords > maxWords) {
+				break;
+			}
 		}
 
 		let next = getRandomArrayElem(possibilities);
@@ -82,8 +100,8 @@ function markovIt() {
 		let len = result.length;
 		currentGram = result.substring(len-order, len);
 
-		//chance that the generating ends early
-		let endChances = 4;
+		//set chance that the generating stops when it reaches a potential 'ending character'
+		let endChances = 5;
 		if (endings.includes(currentGram)) {
 			//generate a number from 1 to endChances
 			let randomNum = Math.floor(Math.random() * endChances) + 1;
